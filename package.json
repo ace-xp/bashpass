@@ -1,0 +1,14 @@
+{
+  "name": "bashpass",
+  "version": "0.1.0",
+  "description": "A Claude Code plugin that quiets permission prompts for safe composite Bash commands.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/",
+    "build:standalone": "node scripts/build-standalone.js"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
