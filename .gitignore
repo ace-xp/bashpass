@@ -1,0 +1,8 @@
+node_modules/
+*.log
+.DS_Store
+.env
+
+# 用户偏好：不 commit 设计文档与 Claude Code 配置
+docs/
+.claude/
