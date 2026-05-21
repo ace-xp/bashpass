@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { matchPattern, classifySubcommand } from '../plugins/bashpass/lib/matcher.js';
+import { matchPattern, classifySubcommand, bashRuleToGlob } from '../plugins/bashpass/lib/matcher.js';
 
 test('matchPattern: exact match', () => {
   assert.equal(matchPattern('pwd', 'pwd'), true);
@@ -49,4 +49,24 @@ test('classifySubcommand: unknown when nothing matches', () => {
   const result = classifySubcommand({ rawText: 'some-custom-tool' }, ruleSet);
   assert.equal(result.decision, 'unknown');
   assert.equal(result.matchedRule, null);
+});
+
+test('bashRuleToGlob: Bash(cmd) → cmd', () => {
+  assert.equal(bashRuleToGlob('Bash(pwd)'), 'pwd');
+});
+
+test('bashRuleToGlob: Bash(cmd:*) → cmd *', () => {
+  assert.equal(bashRuleToGlob('Bash(git status:*)'), 'git status *');
+});
+
+test('bashRuleToGlob: Bash(cmd:arg-pattern) → cmd arg-pattern', () => {
+  assert.equal(bashRuleToGlob('Bash(npm install:foo*)'), 'npm install foo*');
+});
+
+test('bashRuleToGlob: returns null for non-Bash rule', () => {
+  assert.equal(bashRuleToGlob('Read(./src/**)'), null);
+});
+
+test('bashRuleToGlob: returns null for malformed rule', () => {
+  assert.equal(bashRuleToGlob('not a rule'), null);
 });

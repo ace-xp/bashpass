@@ -22,3 +22,14 @@ export function classifySubcommand(subcmd, ruleSet) {
   }
   return { decision: 'unknown', matchedRule: null };
 }
+
+export function bashRuleToGlob(rule) {
+  const m = /^Bash\((.+)\)$/.exec(rule);
+  if (!m) return null;
+  const inner = m[1];
+  const colonIdx = inner.indexOf(':');
+  if (colonIdx === -1) return inner;
+  const cmd = inner.slice(0, colonIdx);
+  const args = inner.slice(colonIdx + 1);
+  return `${cmd} ${args}`;
+}
