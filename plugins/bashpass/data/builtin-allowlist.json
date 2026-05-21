@@ -4,6 +4,7 @@
     "ls *",
     "cat *",
     "pwd",
+    "head",
     "head *",
     "tail *",
     "wc *",
