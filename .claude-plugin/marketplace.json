@@ -1,0 +1,15 @@
+{
+  "name": "bashpass-marketplace",
+  "owner": {
+    "name": "bashpass authors",
+    "url": "https://github.com/YOUR_USER/bashpass"
+  },
+  "plugins": [
+    {
+      "name": "bashpass",
+      "source": "./plugins/bashpass",
+      "description": "Quiet permission prompts for safe composite Bash commands.",
+      "version": "0.1.0"
+    }
+  ]
+}
