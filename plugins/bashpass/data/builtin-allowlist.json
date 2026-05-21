@@ -2,6 +2,8 @@
   "patterns": [
     "ls",
     "ls *",
+    "cd",
+    "cd *",
     "cat *",
     "pwd",
     "head",

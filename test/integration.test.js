@@ -43,6 +43,13 @@ const cases = [
   ['cat /etc/hosts 2>&1', 'allow'],
   ['echo hi &> /dev/null', 'allow'],
 
+  ['cd', 'allow'],
+  ['cd /tmp', 'allow'],
+  ['cd /tmp && ls', 'allow'],
+  ['cd /tmp && pwd && cat /etc/hosts', 'allow'],
+  ['cd "/path with space" && git status', 'allow'],
+  ['cd ~/.claude && ls 2>&1 | head -10', 'allow'],
+
   ['sudo ls', 'deny'],
   ['sudo rm -rf /', 'deny'],
   ['cd /tmp && sudo rm -rf .', 'deny'],

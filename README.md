@@ -59,6 +59,31 @@ touch ~/.claude/.bashpass-acknowledged
 
 bashpass 会把这些规则与内置安全清单合并取并集。
 
+### 常见追加项推荐
+
+bashpass 内置清单刻意保守，只覆盖纯读取与极低风险的写操作（`cd` 等）。以下是一些**常被追加**但属于个人偏好的项，按风险从低到高列出，按需复制：
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git stash:*)",
+      "Bash(git checkout:*)",
+      "Bash(git switch:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run *)"
+    ]
+  }
+}
+```
+
+不建议默认放行的项（保留 ask 行为更稳）：`git push`、`git reset --hard`、`git clean -f`、`rm`、`mv`、`npm install` / `pip install`。
+
 ## 隐私
 
 - bashpass **完全本地运行**，不发起任何网络请求
