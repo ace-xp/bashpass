@@ -29,6 +29,7 @@
     "npm --version",
     "python --version",
     "python3 --version",
+    "echo",
     "echo *",
     "env",
     "uname *"
