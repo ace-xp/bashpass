@@ -4,7 +4,7 @@
   "description": "A Claude Code plugin that quiets permission prompts for safe composite Bash commands.",
   "type": "module",
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test",
     "build:standalone": "node scripts/build-standalone.js"
   },
   "license": "MIT",
