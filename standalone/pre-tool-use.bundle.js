@@ -174,6 +174,15 @@ function splitBySeparators(input) {
       continue;
     }
     if (ch === "'" || ch === '"') { quote = ch; buffer += ch; i++; continue; }
+    if (ch === '&') {
+      const prev = i > 0 ? input[i - 1] : '';
+      const next = i + 1 < input.length ? input[i + 1] : '';
+      if (prev === '>' || prev === '<' || next === '>') {
+        buffer += ch;
+        i++;
+        continue;
+      }
+    }
     let matched = false;
     for (const sep of SEPARATORS) {
       if (input.startsWith(sep, i)) {
