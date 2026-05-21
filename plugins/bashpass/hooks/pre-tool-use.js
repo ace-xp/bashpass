@@ -6,6 +6,7 @@ import { parseBashCommand, ParseError } from '../lib/parser.js';
 import { classifySubcommand } from '../lib/matcher.js';
 import { loadUserAllowPatterns } from '../lib/settings-loader.js';
 import { synthesizeDecision } from '../lib/decision.js';
+import { hasAcknowledged, ackNotice } from '../lib/ack.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const READ_ONLY_TOOLS = new Set(['Read', 'Grep', 'Glob', 'WebFetch', 'WebSearch']);
@@ -29,6 +30,12 @@ function emit(decision) {
 }
 
 function main() {
+  if (!hasAcknowledged()) {
+    process.stderr.write(ackNotice());
+    emit(null);
+    return;
+  }
+
   let input;
   try {
     input = JSON.parse(readFileSync(0, 'utf8'));

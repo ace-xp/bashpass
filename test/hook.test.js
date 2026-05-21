@@ -3,11 +3,20 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { writeFileSync, mkdirSync } from 'node:fs';
+import { homedir } from 'node:os';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const HOOK = join(__dirname, '..', 'plugins', 'bashpass', 'hooks', 'pre-tool-use.js');
 
+function ensureAck() {
+  const ackDir = join(homedir(), '.claude');
+  mkdirSync(ackDir, { recursive: true });
+  writeFileSync(join(ackDir, '.bashpass-acknowledged'), '');
+}
+
 function runHook(payload) {
+  ensureAck();
   const proc = spawnSync('node', [HOOK], {
     input: JSON.stringify(payload),
     encoding: 'utf8',
