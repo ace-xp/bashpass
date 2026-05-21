@@ -6,7 +6,7 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
 
-const BUILTIN_ALLOWLIST = ["ls","ls *","cat *","pwd","head","head *","tail *","wc *","which *","whoami","stat *","git status","git status *","git diff","git diff *","git log","git log *","git show","git show *","git branch","git branch *","git remote -v","grep *","awk *","sed -n *","node --version","npm --version","python --version","python3 --version","echo","echo *","env","uname *"];
+const BUILTIN_ALLOWLIST = ["ls","ls *","cd","cd *","cat *","pwd","head","head *","tail *","wc *","which *","whoami","stat *","git status","git status *","git diff","git diff *","git log","git log *","git show","git show *","git branch","git branch *","git remote -v","grep *","awk *","sed -n *","node --version","npm --version","python --version","python3 --version","echo","echo *","env","uname *"];
 const BUILTIN_DENYLIST = ["rm -rf /*","rm -rf /","rm -rf ~","rm -rf ~/*","rm -rf $HOME*","mkfs*","dd if=*","sudo *","su *","chmod 777 *","chmod -R 777 *","curl * | sh","curl * | bash","wget * | sh","wget * | bash","systemctl *","service *",":(){ :|:& };:","sh","bash"];
 
 function matchPattern(pattern, text) {

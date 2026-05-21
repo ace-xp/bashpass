@@ -9,7 +9,7 @@
       "name": "bashpass",
       "source": "./plugins/bashpass",
       "description": "Quiet permission prompts for safe composite Bash commands.",
-      "version": "0.1.1"
+      "version": "0.1.2"
     }
   ]
 }
