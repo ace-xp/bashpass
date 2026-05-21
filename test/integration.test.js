@@ -39,6 +39,9 @@ const cases = [
   ['ls -la | head', 'allow'],
   ['git status && git diff | head -20', 'allow'],
   ['echo $(whoami)', 'allow'],
+  ['ls "/tmp/foo" 2>&1 | head -20', 'allow'],
+  ['cat /etc/hosts 2>&1', 'allow'],
+  ['echo hi &> /dev/null', 'allow'],
 
   ['sudo ls', 'deny'],
   ['sudo rm -rf /', 'deny'],
