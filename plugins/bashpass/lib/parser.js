@@ -1,3 +1,10 @@
+export class ParseError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'ParseError';
+  }
+}
+
 const SEPARATORS = ['&&', '||', ';', '|', '&'];
 
 export function parseBashCommand(input) {
@@ -45,7 +52,7 @@ function extractSubstitutions(input, sink) {
       // 双引号内仍展开 $() / 反引号
       if (input.startsWith('$(', i)) {
         const close = findMatching(input, i + 2, '(', ')');
-        if (close === -1) break;
+        if (close === -1) throw new ParseError('Unclosed $(...) substitution');
         sink.push(...parseRecursive(input.slice(i + 2, close)));
         result += ' ';
         i = close + 1;
@@ -53,7 +60,7 @@ function extractSubstitutions(input, sink) {
       }
       if (ch === '`') {
         const close = input.indexOf('`', i + 1);
-        if (close === -1) break;
+        if (close === -1) throw new ParseError('Unclosed backtick substitution');
         sink.push(...parseRecursive(input.slice(i + 1, close)));
         result += ' ';
         i = close + 1;
@@ -67,7 +74,7 @@ function extractSubstitutions(input, sink) {
     if (ch === "'" || ch === '"') { quote = ch; result += ch; i++; continue; }
     if (input.startsWith('$(', i)) {
       const close = findMatching(input, i + 2, '(', ')');
-      if (close === -1) break;
+      if (close === -1) throw new ParseError('Unclosed $(...) substitution');
       sink.push(...parseRecursive(input.slice(i + 2, close)));
       result += ' ';
       i = close + 1;
@@ -75,7 +82,7 @@ function extractSubstitutions(input, sink) {
     }
     if (ch === '`') {
       const close = input.indexOf('`', i + 1);
-      if (close === -1) break;
+      if (close === -1) throw new ParseError('Unclosed backtick substitution');
       sink.push(...parseRecursive(input.slice(i + 1, close)));
       result += ' ';
       i = close + 1;
@@ -84,6 +91,7 @@ function extractSubstitutions(input, sink) {
     result += ch;
     i++;
   }
+  if (quote !== null) throw new ParseError(`Unclosed ${quote === "'" ? 'single' : 'double'} quote`);
   return result;
 }
 
@@ -131,5 +139,6 @@ function splitBySeparators(input) {
     if (!matched) { buffer += ch; i++; }
   }
   if (buffer.length > 0) result.push(buffer);
+  if (quote !== null) throw new ParseError(`Unclosed ${quote === "'" ? 'single' : 'double'} quote`);
   return result;
 }

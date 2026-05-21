@@ -120,3 +120,20 @@ test('parse: backslash escapes next char', () => {
   const result = parseBashCommand('echo a\\&\\&b');
   assert.equal(result.subcommands.length, 1);
 });
+
+test('parse: unclosed single quote throws ParseError', () => {
+  assert.throws(() => parseBashCommand("echo 'foo"), { name: 'ParseError' });
+});
+
+test('parse: unclosed $() throws ParseError', () => {
+  assert.throws(() => parseBashCommand('echo $(whoami'), { name: 'ParseError' });
+});
+
+test('parse: unclosed backtick throws ParseError', () => {
+  assert.throws(() => parseBashCommand('echo `whoami'), { name: 'ParseError' });
+});
+
+test('parse: empty input yields no subcommands', () => {
+  const result = parseBashCommand('');
+  assert.equal(result.subcommands.length, 0);
+});
