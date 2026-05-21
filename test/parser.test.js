@@ -68,3 +68,30 @@ test('parse: mixed separators', () => {
   assert.equal(result.subcommands.length, 3);
   assert.deepEqual(result.subcommands.map(s => s.rawText), ['ls', 'git status', 'head']);
 });
+
+test('parse: $(...) substitution exposes inner command', () => {
+  const result = parseBashCommand('echo $(git rev-parse HEAD)');
+  assert.equal(result.subcommands.length, 2);
+  const cmds = result.subcommands.map(s => s.command);
+  assert(cmds.includes('echo'));
+  assert(cmds.includes('git'));
+});
+
+test('parse: nested $(...) all exposed', () => {
+  const result = parseBashCommand('echo $(cat $(which node))');
+  const cmds = result.subcommands.map(s => s.command).sort();
+  assert.deepEqual(cmds, ['cat', 'echo', 'which']);
+});
+
+test('parse: backtick substitution exposes inner command', () => {
+  const result = parseBashCommand('echo `whoami`');
+  const cmds = result.subcommands.map(s => s.command);
+  assert(cmds.includes('echo'));
+  assert(cmds.includes('whoami'));
+});
+
+test('parse: $(...) combined with && still all exposed', () => {
+  const result = parseBashCommand('cd $(git root) && ls');
+  const cmds = result.subcommands.map(s => s.command);
+  assert.deepEqual(cmds.sort(), ['cd', 'git', 'ls']);
+});
