@@ -26,25 +26,63 @@ function parseRecursive(input) {
 function extractSubstitutions(input, sink) {
   let result = '';
   let i = 0;
+  let quote = null; // null | "'" | '"'
   while (i < input.length) {
+    const ch = input[i];
+    if (quote === "'") {
+      if (ch === "'") quote = null;
+      result += ch;
+      i++;
+      continue;
+    }
+    if (ch === '\\' && i + 1 < input.length) {
+      result += ch + input[i + 1];
+      i += 2;
+      continue;
+    }
+    if (quote === '"') {
+      if (ch === '"') { quote = null; result += ch; i++; continue; }
+      // 双引号内仍展开 $() / 反引号
+      if (input.startsWith('$(', i)) {
+        const close = findMatching(input, i + 2, '(', ')');
+        if (close === -1) break;
+        sink.push(...parseRecursive(input.slice(i + 2, close)));
+        result += ' ';
+        i = close + 1;
+        continue;
+      }
+      if (ch === '`') {
+        const close = input.indexOf('`', i + 1);
+        if (close === -1) break;
+        sink.push(...parseRecursive(input.slice(i + 1, close)));
+        result += ' ';
+        i = close + 1;
+        continue;
+      }
+      result += ch;
+      i++;
+      continue;
+    }
+    // unquoted
+    if (ch === "'" || ch === '"') { quote = ch; result += ch; i++; continue; }
     if (input.startsWith('$(', i)) {
       const close = findMatching(input, i + 2, '(', ')');
       if (close === -1) break;
-      const inner = input.slice(i + 2, close);
-      sink.push(...parseRecursive(inner));
+      sink.push(...parseRecursive(input.slice(i + 2, close)));
       result += ' ';
       i = close + 1;
-    } else if (input[i] === '`') {
+      continue;
+    }
+    if (ch === '`') {
       const close = input.indexOf('`', i + 1);
       if (close === -1) break;
-      const inner = input.slice(i + 1, close);
-      sink.push(...parseRecursive(inner));
+      sink.push(...parseRecursive(input.slice(i + 1, close)));
       result += ' ';
       i = close + 1;
-    } else {
-      result += input[i];
-      i++;
+      continue;
     }
+    result += ch;
+    i++;
   }
   return result;
 }
@@ -65,7 +103,21 @@ function splitBySeparators(input) {
   const result = [];
   let buffer = '';
   let i = 0;
+  let quote = null;
   while (i < input.length) {
+    const ch = input[i];
+    if (quote) {
+      if (ch === quote) quote = null;
+      buffer += ch;
+      i++;
+      continue;
+    }
+    if (ch === '\\' && i + 1 < input.length) {
+      buffer += ch + input[i + 1];
+      i += 2;
+      continue;
+    }
+    if (ch === "'" || ch === '"') { quote = ch; buffer += ch; i++; continue; }
     let matched = false;
     for (const sep of SEPARATORS) {
       if (input.startsWith(sep, i)) {
@@ -76,10 +128,7 @@ function splitBySeparators(input) {
         break;
       }
     }
-    if (!matched) {
-      buffer += input[i];
-      i++;
-    }
+    if (!matched) { buffer += ch; i++; }
   }
   if (buffer.length > 0) result.push(buffer);
   return result;

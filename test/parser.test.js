@@ -95,3 +95,28 @@ test('parse: $(...) combined with && still all exposed', () => {
   const cmds = result.subcommands.map(s => s.command);
   assert.deepEqual(cmds.sort(), ['cd', 'git', 'ls']);
 });
+
+test('parse: && inside single quotes is literal', () => {
+  const result = parseBashCommand("echo 'a && b'");
+  assert.equal(result.subcommands.length, 1);
+  assert.equal(result.subcommands[0].command, 'echo');
+});
+
+test('parse: $(...) inside single quotes is literal', () => {
+  const result = parseBashCommand("echo '$(rm -rf /)'");
+  assert.equal(result.subcommands.length, 1);
+  assert.equal(result.subcommands[0].command, 'echo');
+});
+
+test('parse: $(...) inside double quotes is still expanded', () => {
+  // POSIX: double quotes 内 $() 仍展开
+  const result = parseBashCommand('echo "$(whoami)"');
+  const cmds = result.subcommands.map(s => s.command);
+  assert(cmds.includes('echo'));
+  assert(cmds.includes('whoami'));
+});
+
+test('parse: backslash escapes next char', () => {
+  const result = parseBashCommand('echo a\\&\\&b');
+  assert.equal(result.subcommands.length, 1);
+});
