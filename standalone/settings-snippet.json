@@ -1,0 +1,16 @@
+{
+  "_comment": "复制下面 hooks 块到你的 ~/.claude/settings.json 中。把 <PATH> 替换为本机 pre-tool-use.bundle.js 的绝对路径。",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node <PATH>/pre-tool-use.bundle.js"
+          }
+        ]
+      }
+    ]
+  }
+}
