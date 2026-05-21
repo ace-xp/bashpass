@@ -83,3 +83,28 @@ test('hook: malformed Bash command → no decision (fail-safe)', () => {
   const decision = JSON.parse(trimmed);
   assert.equal(decision.hookSpecificOutput, undefined);
 });
+
+function runHookWithDebug(payload) {
+  ensureAck();
+  const proc = spawnSync('node', [HOOK], {
+    input: JSON.stringify(payload),
+    encoding: 'utf8',
+    env: { ...process.env, BASHPASS_DEBUG: '1' },
+  });
+  return { stdout: proc.stdout, stderr: proc.stderr, status: proc.status };
+}
+
+test('hook debug: emits decision log on allow', () => {
+  const out = runHookWithDebug({ tool_name: 'Bash', tool_input: { command: 'ls -la' } });
+  assert.match(out.stderr, /\[bashpass\] decision=allow/);
+});
+
+test('hook debug: emits decision log on deny', () => {
+  const out = runHookWithDebug({ tool_name: 'Bash', tool_input: { command: 'sudo rm' } });
+  assert.match(out.stderr, /\[bashpass\] decision=deny/);
+});
+
+test('hook debug: silent without env var', () => {
+  const out = runHook({ tool_name: 'Bash', tool_input: { command: 'ls' } });
+  assert.doesNotMatch(out.stderr, /\[bashpass\]/);
+});

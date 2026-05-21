@@ -96,7 +96,17 @@ function main() {
     subcmd,
   }));
 
-  emit(synthesizeDecision(classifications));
+  const decision = synthesizeDecision(classifications);
+  debugLog(toolName, command, decision, classifications);
+  emit(decision);
+}
+
+function debugLog(toolName, command, decision, classifications) {
+  if (process.env.BASHPASS_DEBUG !== '1') return;
+  const verdict = decision === null ? 'passthrough' : decision.permissionDecision;
+  const rules = [...new Set(classifications.map(c => c.matchedRule).filter(Boolean))].join(',');
+  const line = `[bashpass] decision=${verdict} tool=${toolName} subcmds=${classifications.length} rules=[${rules}] cmd="${command.replace(/"/g, '\\"')}"\n`;
+  process.stderr.write(line);
 }
 
 main();
