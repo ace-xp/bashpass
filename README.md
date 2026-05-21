@@ -86,7 +86,7 @@ npm run build:standalone  # 重新生成 standalone bundle
 
 ## 安全漏洞披露
 
-发现绕过或漏洞？请在 GitHub Security Advisory 提交，或邮件至 SECURITY@PLACEHOLDER（实际部署时由作者替换）。请勿直接开 public issue。
+发现绕过或漏洞？请在 GitHub Security Advisory 提交，或邮件至 w961952199@163.com。请勿直接开 public issue。
 
 ## License
 
