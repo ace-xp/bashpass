@@ -23,7 +23,7 @@ bashpass 是一个 Claude Code plugin，通过 PreToolUse hook 解决"复合 Bas
 在 Claude Code 内执行：
 
 ```
-/plugin marketplace add YOUR_USER/bashpass
+/plugin marketplace add ace-xp/bashpass
 /plugin install bashpass
 ```
 
