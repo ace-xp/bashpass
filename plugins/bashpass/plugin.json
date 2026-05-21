@@ -1,6 +1,6 @@
 {
   "name": "bashpass",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Quiet permission prompts for safe composite Bash commands.",
   "hooks": {
     "PreToolUse": [
